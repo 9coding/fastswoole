@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+use Fastapi\Core;
+
+$executeFile = $argv[0];
+$command = strtolower(trim(($argv[1]) ?? ''));
+$options = strtolower(trim(($argv[2]) ?? ''));
+if (!in_array($command, ['start','restart','stop','reload'])) {
+    die('Support command : php '.$executeFile.' start | restart | stop | reload | start -d');
+}
+if ($options && $options != '-d') {
+    die('Support option : php '.$executeFile.' start -d');
+}
+
+define('ROOT_DIR', realpath(__DIR__.'/../'));
+define('APP_DIR', ROOT_DIR.'/application');
+define('CONFIG_DIR', ROOT_DIR.'/config');
+define('TEMP_DIR', ROOT_DIR.'/runtime');
+define('LIB_DIR', ROOT_DIR.'/src');
+
+require ROOT_DIR.'/vendor/autoload.php';
+
+$core = Core::init();
+
+$executeResult = Core::$container['httpserver']->execute($command, $options);
+if (!$executeResult) {
+    die('服务器执行失败，具体请查看日志！');
+}

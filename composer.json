@@ -1,0 +1,40 @@
+{
+    "name": "9coding/fastapi",
+    "description": "基于swoole的api框架",
+    "keywords": ["api", "swoole", "httpserver"],
+    "license": "MIT",
+    "type": "framework",
+    "homepage": "http://www.9coding.cn/",
+    "authors": [
+        {
+            "name": "ivan zhao",
+            "email": "ivan820819@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "ext-phpredis": "^4.3",
+        "ext-swoole": "^4.3",
+        "monolog/monolog": "@stable",
+        "hassankhan/config": "@stable",
+        "nikic/fast-route": "^1.3",
+        "mongodb/mongodb": "^1.4",
+        "league/pipeline": "^1.0",
+        "pimple/pimple": "^3.2",
+        "davedevelopment/stiphle": "^0.9",
+        "firebase/php-jwt": "^5.0",
+        "philipp15b/php-i18n": "^4.0"
+    },
+    "require-dev": {
+        "swoft/swoole-ide-helper": "dev-master",
+        "phpunit/phpunit": "^8.1",
+        "friendsofphp/php-cs-fixer": "^2.14"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fastapi\\": "src/",
+            "application\\": "application/"
+        }
+    },
+    "bin": ["bin/fastapi"]
+}
