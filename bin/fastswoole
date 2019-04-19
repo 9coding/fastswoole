@@ -1,14 +1,14 @@
 #!/usr/bin/env php
 <?php
-use Fastapi\Core;
+use FastSwoole\Core;
 
 $executeFile = $argv[0];
 $command = strtolower(trim(($argv[1]) ?? ''));
-$options = strtolower(trim(($argv[2]) ?? ''));
+$runmode = strtolower(trim(($argv[2]) ?? ''));
 if (!in_array($command, ['start','restart','stop','reload'])) {
-    die('Support command : php '.$executeFile.' start | restart | stop | reload | start -d');
+    die('Support command : php '.$executeFile.' start | restart | stop | reload | startd');
 }
-if ($options && $options != '-d') {
+if (!in_array($runmode, ['http','websocket'])) {
     die('Support option : php '.$executeFile.' start -d');
 }
 
@@ -20,7 +20,7 @@ define('LIB_DIR', ROOT_DIR.'/src');
 
 require ROOT_DIR.'/vendor/autoload.php';
 
-$core = Core::init();
+$core = Core::init($runmode);
 
 $executeResult = Core::$container['httpserver']->execute($command, $options);
 if (!$executeResult) {

@@ -21,5 +21,9 @@ return [
         'process_name' => 'fastapi',
         'document_root' => ROOT_DIR.'/public',
         'enable_static_handler' => true,
+    ],
+
+    'websocket' => [
+        
     ]
 ];

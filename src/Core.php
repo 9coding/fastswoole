@@ -1,6 +1,6 @@
 <?php
 
-namespace Fastapi;
+namespace FastSwoole;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -18,7 +18,7 @@ class Core {
     
     public static $container;
 
-    public static function init() {
+    public static function init($mode) {
         self::$container = new Container();
         $error = new ServerException();
         register_shutdown_function(array($error, 'shutdown'));
@@ -31,10 +31,7 @@ class Core {
     
     private static function registeService() {
         self::$container->register(new ConfigProvider());
-        self::$container->register(new LanguageProvider());
         self::$container->register(new LogProvider());
-        self::$container->register(new RouteProvider());
-        self::$container->register(new HttpServerProvider());
     }
     
     public function addService($service = '') {
