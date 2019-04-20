@@ -1,10 +1,10 @@
 <?php
 
-namespace Fastapi\Service;
+namespace FastSwoole\Service;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Fastapi\Http\Route;
+use FastSwoole\Http\Route;
 
 class RouteProvider implements ServiceProviderInterface {
 

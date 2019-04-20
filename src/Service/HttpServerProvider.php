@@ -1,10 +1,10 @@
 <?php
 
-namespace Fastapi\Service;
+namespace FastSwoole\Service;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Fastapi\Http\Server;
+use FastSwoole\Http\Server;
 
 class HttpServerProvider implements ServiceProviderInterface {
 

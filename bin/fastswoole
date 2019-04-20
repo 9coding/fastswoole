@@ -4,7 +4,7 @@ use FastSwoole\Core;
 
 $executeFile = $argv[0];
 $command = strtolower(trim(($argv[1]) ?? ''));
-$runmode = strtolower(trim(($argv[2]) ?? ''));
+$runmode = strtolower(trim(($argv[2]) ?? 'http'));
 if (!in_array($command, ['start','restart','stop','reload'])) {
     die('Support command : php '.$executeFile.' start | restart | stop | reload | startd');
 }
@@ -22,7 +22,7 @@ require ROOT_DIR.'/vendor/autoload.php';
 
 $core = Core::init($runmode);
 
-$executeResult = Core::$container['httpserver']->execute($command, $options);
+$executeResult = Core::$container['httpserver']->execute($command);
 if (!$executeResult) {
     die('服务器执行失败，具体请查看日志！');
 }

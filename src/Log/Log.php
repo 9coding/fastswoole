@@ -1,6 +1,6 @@
 <?php
 
-namespace Fastapi\Log;
+namespace FastSwoole\Log;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;

@@ -5,7 +5,7 @@ namespace FastSwoole;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Fastapi\Service\ConfigProvider;
-use Fastapi\Service\HttpServerProvider;
+use Fastapi\Service\ErrorProvider;
 use Fastapi\Service\LogProvider;
 use Fastapi\Service\LanguageProvider;
 use Fastapi\Service\RouteProvider;
@@ -20,8 +20,7 @@ class Core {
 
     public static function init($mode) {
         self::$container = new Container();
-        $error = new ServerException();
-        register_shutdown_function(array($error, 'shutdown'));
+        
         self::registeService();
         BaseMiddleware::registeMiddleware();
         $dbConfig = self::$container['config'];
@@ -32,6 +31,7 @@ class Core {
     private static function registeService() {
         self::$container->register(new ConfigProvider());
         self::$container->register(new LogProvider());
+        self::$container->register(new ErrorProvider());
     }
     
     public function addService($service = '') {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fastapi\Http;
+namespace FastSwoole\Http;
 
 
 class Response {

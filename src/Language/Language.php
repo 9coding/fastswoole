@@ -1,8 +1,8 @@
 <?php
 
-namespace Fastapi\Language;
+namespace FastSwoole\Language;
 
-use Fastapi\Core;
+use FastSwoole\Core;
 
 class Language {
 

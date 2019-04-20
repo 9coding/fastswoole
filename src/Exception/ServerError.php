@@ -1,6 +1,6 @@
 <?php
 
-namespace Fastapi\Exception;
+namespace FastSwoole\Exception;
 
 use Exception;
 

@@ -1,23 +1,12 @@
 <?php
 
-namespace Fastapi\Middleware;
+namespace FastSwoole\Middleware;
 
-use League\Pipeline\StageInterface;
-use Fastapi\Core;
+use FastSwoole\Core;
 
-class BaseMiddleware implements StageInterface {
-    
-    protected $params;
+class MiddlewareManager {
 
-    public function __construct($params) {
-        $this->params = $params;
-    }
-
-    public function __invoke($request) {
-        return $this->handle($request);
-    }
-    
-    private static function getMiddlewares() {
+    private function getMiddlewares() {
         $middlewares = Core::$container['config']['middleware'];
         $confMiddlewares = [];
         if (is_array($middlewares)) {
@@ -31,8 +20,8 @@ class BaseMiddleware implements StageInterface {
         return $confMiddlewares;
     }
 
-    public static function registeMiddleware() {
-        $middlewares = self::getMiddlewares();
+    public function registeMiddleware() {
+        $middlewares = $this->getMiddlewares();
         foreach ($middlewares as $middleware => $params) {
             $middleClass = '\Fastapi\\Middleware\\'.$middleware;
             Core::$container['middleware_param'] = $params;
@@ -42,8 +31,8 @@ class BaseMiddleware implements StageInterface {
         }
     }
     
-    public static function fetchMiddleware() {
-        $middlewares = self::getMiddlewares();
+    public function fetchMiddleware() {
+        $middlewares = $this->getMiddlewares();
         $confMiddlewares = [];
         foreach ($middlewares as $middleware => $params) {
             $confMiddlewares[] = Core::$container[$middleware];

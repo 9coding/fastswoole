@@ -1,10 +1,10 @@
 <?php
 
-namespace Fastapi\Service;
+namespace FastSwoole\Service;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Fastapi\Language\Language;
+use FastSwoole\Language\Language;
 
 class LanguageProvider implements ServiceProviderInterface {
 

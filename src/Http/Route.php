@@ -1,6 +1,6 @@
 <?php
 
-namespace Fastapi\Http;
+namespace FastSwoole\Http;
 
 use FastRoute\RouteCollector;
 use function FastRoute\cachedDispatcher;

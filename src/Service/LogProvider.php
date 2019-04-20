@@ -1,10 +1,10 @@
 <?php
 
-namespace Fastapi\Service;
+namespace FastSwoole\Service;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Fastapi\Log\Log;
+use FastSwoole\Log\Log;
 
 class LogProvider implements ServiceProviderInterface {
 

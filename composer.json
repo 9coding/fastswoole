@@ -32,8 +32,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Fastapi\\": "src/",
-            "application\\": "application/"
+            "FastSwoole\\": "src/",
+            "Application\\": "application/"
         }
     },
     "bin": ["bin/fastapi"]
