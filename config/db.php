@@ -2,33 +2,25 @@
 
 return [
     'mysql' => [
-        'mode'=>'base',
-        'host' => 'localhost',
+        'host' => '127.0.0.1',
         'port' => 3306,
         'user' => 'root',
         'password' => '820819',
-        'database' => 'fastcrawler',
+        'database' => 'fastswoole',
         'charset' => 'utf8mb4',
-        'maxConnnectNum' => 10,
-        'test' => [
-            'host' => '192.168.112.55',
-            'maxConnnectNum' => 5
-        ],
-        'production' => [
-            'host' => '192.168.112.58',
-            'maxConnnectNum' => 20
-        ]
+        'timeout' => 5,
+        'max_connnect' => 10,
     ],
     'redis' => [
-        'host' => 'localhost',
+        'host' => '127.0.0.1',
         'port' => 6379,
         'db' => 1,
         'password' => ''
     ],
     'mongodb' => [
-        'server' => 'localhost',
+        'server' => '127.0.0.1',
         'port' => 27017,
-        'dbname' => 'fastapi',
+        'dbname' => 'fastswoole',
         'user' => '',
         'password' => '',
         'options' => []

@@ -1,46 +1,58 @@
 <?php
 
-namespace Fastapi\Pool;
+namespace FastSwoole;
 
-use Fastapi\Core;
+use FastSwoole\Core;
 use Swoole\Coroutine\Channel;
-use Swoole\Table;
 
 class Pool {
     
-    static protected $pool = [];
+    public $pool;
     
-    static protected $connected = 0;
+    public $connected = 0;
     
-    static protected $config = [];
+    public $popBox = [];
     
-    static protected $popBox = [];
-    
-    static protected $runMode = '';
-    
-    static protected $baseMode = 'base';
+    public $maxConnect;
 
-    public static function init($config = []) {
-        self::$runMode = $config['mode'] ?? 'base';
-        unset($config['mode']);
-        foreach ($config as $ckey => $cvalue) {
-            if (!is_array($cvalue)) {
-                self::$config[self::$baseMode][$ckey] = $cvalue;
-            } else {
-                foreach ($cvalue as $key => $value) {
-                    self::$config[$ckey][$key] = $value;
-                }
-            }
+    public function __construct() {
+        $type = strtolower(get_class($this));
+        $this->maxConnect = Core::$app['config']->get('db.'.$type.'.max_connnect', 5);
+        $this->pool = new Channel($this->maxConnect);
+        while ($this->connected < $this->maxConnect) {
+            $mysqlConnect = $this->createConnect();
+            $this->pool->push($mysqlConnect);
+            $this->connected++;
         }
-        foreach (self::$config as $key => $value) {
-            if ($key != self::$baseMode) {
-                foreach (self::$config[self::$baseMode] as $basekey => $basevalue) {
-                    if (!isset(self::$config[$key][$basekey])) {
-                        self::$config[$key][$basekey] = $basevalue;
-                    }
-                }
-            }
+    }
+    
+    public function fetch() {
+        $mysqlConnect = $this->pool->pop();
+        if (!$mysqlConnect->connected) {
+            $mysqlConnect = $this->createConnect();
+            $this->pool->push($mysqlConnect);
         }
-        self::$pool = new Channel(self::$config[self::$runMode]['maxConnnectNum']);
+        $unique = spl_object_hash($mysqlConnect);
+        $this->popBox[$unique] = 1;
+        return $mysqlConnect;
+    }
+    
+    public function recycle($connect) {
+        $unique = spl_object_hash($connect);
+        if (!$connect->connected) {
+            $this->connected--;
+            unset($this->popBox[$unique]);
+            return false;
+        }
+        if ($this->connected > $this->maxConnect) {
+            $this->connected--;
+        }
+        if (!isset($this->popBox[$unique])) {
+            return false;
+        }
+        if ($this->pool->length() < $this->maxConnect) {
+            $this->pool->push($connect);
+        }
+        unset($this->popBox[$unique]);
     }
 }

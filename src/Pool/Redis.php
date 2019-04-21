@@ -1,18 +1,18 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+namespace FastSwoole\Pool;
 
-namespace Fastapi\Pool;
+use Swoole\Coroutine\Redis as CoRedis;
+use FastSwoole\Pool as DBPool;
 
-/**
- * Description of Redis
- *
- * @author Administrator
- */
-class Redis {
-    //put your code here
+class Redis extends DBPool {
+
+    public function createConnect() {
+        $redisConfig = Core::$app['config']->get('db.redis');
+        $redisConnect = new CoRedis();
+        if ($redisConnect->connect($redisConfig) === false) {
+            throw new \Exception('Can not connect to redis : '.$redisConfig->errMsg);
+        }
+        return $redisConnect;
+    }
 }

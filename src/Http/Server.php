@@ -4,6 +4,7 @@ namespace FastSwoole\Http;
 
 use FastSwoole\Core;
 use FastSwoole\Exception\ServerException;
+use FastSwoole\Pool\Mysql as MysqlPool;
 use League\Pipeline\Pipeline;
 use Swoole\Process;
 use Swoole\Http\Server as HttpServer;
@@ -19,7 +20,7 @@ class Server {
     
     private $masterId = '';
 
-    public function __construct($config) {
+    public function __construct() {
         $this->config = Core::$app['config']->get('server.http');
     }
     
@@ -152,6 +153,9 @@ class Server {
             swoole_set_process_name('task worker process '.$this->config['process_name']);
         } else {
             swoole_set_process_name('event worker process '.$this->config['process_name']);
+            Core::$app['mysql'] = function ($c) {
+                return new MysqlPool();
+            };
         }
     }
     

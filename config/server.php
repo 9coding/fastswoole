@@ -14,13 +14,13 @@ return [
         'chroot' => APP_DIR,
         'user' => 'www-data',
         'group' => 'www-data',
-        'max_coro_num' => 3000,//根据实际业务的压测结果设置该值，默认为3000
         'log_file' => TEMP_DIR . '/swoole.log',
         'pid_file' => TEMP_DIR . '/server.pid',
         'use_https' => 0,
-        'process_name' => 'fastapi',
+        'process_name' => 'fastswoole',
         'document_root' => ROOT_DIR.'/public',
         'enable_static_handler' => true,
+        'max_coroutine' => 3000,//根据实际业务的压测结果设置该值，默认为3000
     ],
 
     'websocket' => [
