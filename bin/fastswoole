@@ -16,13 +16,13 @@ define('ROOT_DIR', realpath(__DIR__.'/../'));
 define('APP_DIR', ROOT_DIR.'/application');
 define('CONFIG_DIR', ROOT_DIR.'/config');
 define('TEMP_DIR', ROOT_DIR.'/runtime');
-define('LIB_DIR', ROOT_DIR.'/src');
+define('MODE', $runmode);
 
 require ROOT_DIR.'/vendor/autoload.php';
 
-$core = Core::init($runmode);
+Core::init();
 
-$executeResult = Core::$container['httpserver']->execute($command);
+$executeResult = Core::$app[$runmode]->execute($command);
 if (!$executeResult) {
     die('服务器执行失败，具体请查看日志！');
 }

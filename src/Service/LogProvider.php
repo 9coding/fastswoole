@@ -4,13 +4,15 @@ namespace FastSwoole\Service;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use FastSwoole\Log\Log;
+use FastSwoole\Logger;
 
 class LogProvider implements ServiceProviderInterface {
 
     public function register(Container $pimple) {
         $pimple['log'] = function ($c) {
-            return new Log('fastapi');
+            $logger = new Logger('fastswoole');
+            $logger->pushHandler(TEMP_DIR.'/'.date('Y-m-d').'.log');
+            return $logger;
         };
     }
 

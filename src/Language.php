@@ -1,6 +1,6 @@
 <?php
 
-namespace FastSwoole\Language;
+namespace FastSwoole;
 
 use FastSwoole\Core;
 
@@ -8,10 +8,10 @@ class Language {
 
     private $lang = [];
 
-    public function __construct($lang) {
-        $systemLang = LIB_DIR.'/Language/'.$lang.'.php';
-        $userLang = APP_DIR.'/'.Core::$container['config']['default_module'].'/lang/'.$lang.'.php';
-        foreach ([$systemLang,$userLang] as $value) {
+    public function __construct() {
+        $lang = Core::$app['config']->get('app.'.MODE.'.default_language');
+        $userLang = APP_DIR.'/language/'.$lang.'.php';
+        foreach ($userLang as $value) {
             if (file_exists($value)) {
                 $langArray = include $value;
                 $this->lang = array_merge($this->lang, $langArray);

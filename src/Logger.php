@@ -1,11 +1,11 @@
 <?php
 
-namespace FastSwoole\Log;
+namespace FastSwoole;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-class Log {
+class Logger {
     
     private $handle;
 

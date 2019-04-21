@@ -5,8 +5,8 @@ namespace FastSwoole\Http;
 use FastRoute\RouteCollector;
 use function FastRoute\cachedDispatcher;
 use FastRoute\Dispatcher as RouteDispatcher;
-use Fastapi\Exception\ServerException;
-use Fastapi\Core;
+use FastSwoole\Exception\ServerException;
+use FastSwoole\Core;
 
 class Route {
 
@@ -14,25 +14,16 @@ class Route {
     
     public function __construct() {
         $routeConfig = [];
-        $modules = scandir(APP_DIR);
-        if (is_array($modules)) {
-            foreach ($modules as $module) {
-                $routeFile = APP_DIR.'/'.$module.'/config/route.php';
-                if (file_exists($routeFile)) {
-                    $routeConfig[$module] = include_once $routeFile;
-                }
-            }
+        $routeFile = APP_DIR.'/config/route.php';
+        if (file_exists($routeFile)) {
+            $routeConfig = include_once $routeFile;
         }
         $this->dispatcher = cachedDispatcher(function(RouteCollector $r) use ($routeConfig) {
-            foreach ($routeConfig as $module => $routes) {
-                $r->addGroup('/'.$module, function (RouteCollector $r) use ($routes) {
-                    foreach ($routes as $method => $route) {
-                        $method = strtoupper($method);
-                        foreach ($route as $uri => $callback) {
-                            $r->addRoute($method, '/'.$uri, $callback);
-                        }
-                    }
-                });
+            foreach ($routeConfig as $method => $route) {
+                $method = strtoupper($method);
+                foreach ($route as $uri => $callback) {
+                    $r->addRoute($method, '/'.$uri, $callback);
+                }
             }
         }, [
             'cacheFile' => TEMP_DIR . '/route.cache',
@@ -69,11 +60,11 @@ class Route {
         $urlPart = explode('/', $url);
         $appConfig = Core::$container['config'];
         if ($url == '/') {
-            $routeUrl = $appConfig['default_module'].'/'.$appConfig['default_controller'].'/'.$appConfig['default_action'];
+            $routeUrl = $appConfig['default_controller'].'/'.$appConfig['default_action'];
         } elseif (count($urlPart) == 1) {
-            $routeUrl = $urlPart[0].'/'.$appConfig['default_controller'].'/'.$appConfig['default_action'];
+            $routeUrl = $urlPart[0].'/'.$appConfig['default_action'];
         } elseif (count($urlPart) == 2) {
-            $routeUrl = $appConfig['default_module'].'/'.$url;
+            $routeUrl = $urlPart[0].'/'.$urlPart[1];
         } else {
             $routeUrl = $url;
         }
@@ -83,12 +74,8 @@ class Route {
         $routeResult = $this->match('/'.$routeUrl, $request_method);
         $currentRequest = new Request($request, $routeResult['vars']);
         $handle_part = explode('/', trim($routeResult['handle'], '/'));
-        if (count($handle_part) == 2) {
-            array_unshift($handle_part, $appConfig['default_module']);
-        }
-        $currentRequest->module = $handle_part[0];
-        $currentRequest->controller = '\application\\'.$currentRequest->module.'\\controller\\'.ucfirst($handle_part[1]);
-        $currentRequest->action = $handle_part[2].'Action';
+        $currentRequest->controller = '\application\\controller\\'.ucfirst($handle_part[0]);
+        $currentRequest->action = $handle_part[1].'Action';
         $currentController = $currentRequest->controller;
         if (class_exists($currentController)) {
             $currentAction = $currentRequest->action;

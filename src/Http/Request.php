@@ -4,8 +4,6 @@ namespace FastSwoole\Http;
 
 class Request {
 
-    public $module = '';
-
     public $controller = '';
 
     public $action = '';

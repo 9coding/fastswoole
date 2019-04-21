@@ -7,48 +7,45 @@ use Pimple\ServiceProviderInterface;
 use Fastapi\Service\ConfigProvider;
 use Fastapi\Service\ErrorProvider;
 use Fastapi\Service\LogProvider;
-use Fastapi\Service\LanguageProvider;
-use Fastapi\Service\RouteProvider;
-use Fastapi\Pool\Mysql;
-use Fastapi\Exception\ServerException;
-use Fastapi\Middleware\BaseMiddleware;
+use Fastapi\Service\MiddlewareProvider;
 use League\Pipeline\StageInterface;
 
 class Core {
     
-    public static $container;
+    public static $app;
 
-    public static function init($mode) {
-        self::$container = new Container();
-        
+    public static function init() {
+        self::$app = new Container();
         self::registeService();
-        BaseMiddleware::registeMiddleware();
-        $dbConfig = self::$container['config'];
-        Mysql::init($dbConfig['mysql']);
-        return new static;
+        $modeService = self::$app['config']->get('app.'.MODE.'.service', []);
+        foreach ($modeService as $service) {
+            if (class_exists($service)) {
+                self::addService(new $service);
+            }
+        }
     }
     
     private static function registeService() {
-        self::$container->register(new ConfigProvider());
-        self::$container->register(new LogProvider());
-        self::$container->register(new ErrorProvider());
+        self::$app->register(new ConfigProvider());
+        self::$app->register(new LogProvider());
+        self::$app->register(new ErrorProvider());
+        self::$app->register(new MiddlewareProvider());
     }
     
-    public function addService($service = '') {
+    public static function addService($service = '') {
         if ($service instanceof ServiceProviderInterface) {
-            self::$container->register($service);
+            self::$app->register($service);
             return true;
         } else {
             return false;
         }
     }
     
-    public function addMiddleware($middleClass = '', $params = '') {
+    public static function addMiddleware($middleClass = '', $params = '') {
         if ($middleClass instanceof StageInterface) {
             $middleware = get_class($middleClass);
-            self::$container['middleware_param'] = $params;
-            self::$container[$middleware] = function ($c) use ($middleClass) {
-                return new $middleClass($c['middleware_param']);
+            self::$app[$middleware] = function ($c) use ($middleClass, $params) {
+                return new $middleClass($params);
             };
             return true;
         } else {

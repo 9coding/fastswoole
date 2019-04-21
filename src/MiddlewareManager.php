@@ -7,11 +7,11 @@ use FastSwoole\Core;
 class MiddlewareManager {
 
     private function getMiddlewares() {
-        $middlewares = Core::$container['config']['middleware'];
+        $middlewares = Core::$app['config']->get('app.'.MODE.'.middleware');
         $confMiddlewares = [];
         if (is_array($middlewares)) {
             foreach ($middlewares as $middleware => $params) {
-                $middleClass = '\Fastapi\\Middleware\\'.$middleware;
+                $middleClass = '\FastSwoole\\Middleware\\'.$middleware;
                 if ($params !== false && class_exists($middleClass)) {
                     $confMiddlewares[$middleware] = $params;
                 }
@@ -23,10 +23,9 @@ class MiddlewareManager {
     public function registeMiddleware() {
         $middlewares = $this->getMiddlewares();
         foreach ($middlewares as $middleware => $params) {
-            $middleClass = '\Fastapi\\Middleware\\'.$middleware;
-            Core::$container['middleware_param'] = $params;
-            Core::$container[$middleware] = function ($c) use ($middleClass) {
-                return new $middleClass($c['middleware_param']);
+            $middleClass = '\FastSwoole\\Middleware\\'.$middleware;
+            Core::$app[$middleware] = function ($c) use ($middleClass, $params) {
+                return new $middleClass($params);
             };
         }
     }
@@ -35,7 +34,7 @@ class MiddlewareManager {
         $middlewares = $this->getMiddlewares();
         $confMiddlewares = [];
         foreach ($middlewares as $middleware => $params) {
-            $confMiddlewares[] = Core::$container[$middleware];
+            $confMiddlewares[] = Core::$app[$middleware];
         }
         return $confMiddlewares;
     }
