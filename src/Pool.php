@@ -12,19 +12,24 @@ class Pool {
     
     public $connected = 0;
     
-    public $maxConnect;
+    public $maxConnect = 10;
+    
+    public $config;
 
     public function __construct() {
         $className = explode('\\', strtolower(get_class($this)));
         $classType = array_pop($className);
-        $this->maxConnect = Core::$app['config']->get('db.'.$classType.'.max_connnect', 10);
+        $this->config = Core::$app['config']->get('db.'.$classType);
+        if (isset($this->config['max_connnect']) && $this->config['max_connnect'] > 0) {
+            $this->maxConnect = $this->config['max_connnect'];
+        }
         $this->pool = new Channel($this->maxConnect+1);
     }
     
     public function fetch() {
         if ($this->pool->isEmpty()) {
             if ($this->connected < $this->maxConnect) {
-                $mysqlConnect = $this->createConnect();
+                $mysqlConnect = $this->createConnect($this->config);
                 $this->connected++;
             } else {
                 $mysqlConnect = $this->pool->pop(3);

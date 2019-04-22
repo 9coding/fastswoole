@@ -24,4 +24,9 @@ class Model {
         $this->model->query($sql, $timeout);
         return $this->model->recv();
     }
+    
+    public function execute($sql, $bind = '') {
+        $stmt = $this->model->prepare($sql);
+        return $stmt->execute($bind);
+    }
 }
