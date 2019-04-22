@@ -7,12 +7,9 @@ use FastSwoole\Pool as DBPool;
 
 class Redis extends DBPool {
 
-    public function createConnect() {
-        $redisConfig = Core::$app['config']->get('db.redis');
+    public function createConnect($redisConfig) {
         $redisConnect = new CoRedis();
-        if ($redisConnect->connect($redisConfig) === false) {
-            throw new \Exception('Can not connect to redis : '.$redisConfig->errMsg);
-        }
+        $redisConnect->connect($redisConfig);
         return $redisConnect;
     }
 }

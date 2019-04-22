@@ -22,7 +22,7 @@ class Model {
     
     public function query($sql, $timeout = 5) {
         $this->model->query($sql, $timeout);
-        return $this->model->recv();
+        return $this->model->recv($timeout);
     }
     
     public function execute($sql, $bind = '') {

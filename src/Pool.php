@@ -38,6 +38,7 @@ class Pool {
             $mysqlConnect = $this->pool->pop(3);
         }
         if (!$mysqlConnect || !$mysqlConnect->connected) {
+            $this->connected--;
             throw new ServerException(504, 'Gateway Time-out');
         }
         echo date('H;i;s').'fetch pop后连接池剩余长度'.$this->pool->length()."\n";
