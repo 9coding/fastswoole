@@ -7,8 +7,8 @@ class Config {
     
     public function load() {
         foreach (glob(CONFIG_DIR.'/*.php') as $configFile) {
-            $filename = explode('.', $configFile);
-            $this->config[$filename[0]] = include_once CONFIG_DIR.'/'.$configFile;
+            $filename = explode('.', basename($configFile));
+            $this->config[$filename[0]] = include_once $configFile;
         }
     }
     
