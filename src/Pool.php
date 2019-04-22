@@ -17,6 +17,7 @@ class Pool {
 
     public function __construct() {
         $type = strtolower(get_class($this));
+        echo 'type class name '.$type."\n";
         $this->maxConnect = Core::$app['config']->get('db.'.$type.'.max_connnect', 5);
         $this->pool = new Channel($this->maxConnect);
         while ($this->connected < $this->maxConnect) {
@@ -24,6 +25,7 @@ class Pool {
             $this->pool->push($mysqlConnect);
             $this->connected++;
         }
+        echo 'init length '.$this->pool->length()."\n";
     }
     
     public function fetch() {

@@ -153,7 +153,9 @@ class Server {
             swoole_set_process_name('task worker process '.$this->config['process_name']);
         } else {
             swoole_set_process_name('event worker process '.$this->config['process_name']);
+            echo 'workid '.$worker_id."\n";
             Core::$app['mysql'] = function ($c) {
+                echo 'MysqlPool '."\n";
                 return new MysqlPool();
             };
         }
