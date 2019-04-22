@@ -13,14 +13,17 @@ class Pool {
     
     public $popBox = [];
     
-    public $maxConnect;
+    public $maxConnect = 100;
+    
+    public $minConnect = 10;
 
     public function __construct() {
-        $type = array_pop(explode('\\', strtolower(get_class($this))));
-        echo 'type class name '.$type."\n";
-        $this->maxConnect = Core::$app['config']->get('db.'.$type.'.max_connnect', 5);
+        $className = explode('\\', strtolower(get_class($this)));
+        $classType = array_pop($className);
+        echo 'type class name '.$classType."\n";
+        $this->maxConnect = Core::$app['config']->get('db.'.$classType.'.max_connnect', 5);
         $this->pool = new Channel($this->maxConnect);
-        while ($this->connected < $this->maxConnect) {
+        while ($this->connected < $this->minConnect) {
             $mysqlConnect = $this->createConnect();
             $this->pool->push($mysqlConnect);
             $this->connected++;
@@ -30,13 +33,17 @@ class Pool {
     
     public function fetch() {
         if ($this->pool->isEmpty()) {
-            $mysqlConnect = $this->createConnect();
-        } else {
-            $mysqlConnect = $this->pool->pop();
-            if (!$mysqlConnect->connected) {
+            if ($this->connected < $this->maxConnect) {
                 $mysqlConnect = $this->createConnect();
-                $this->pool->push($mysqlConnect);
+                $this->connected++;
+            } else {
+                $mysqlConnect = $this->pool->pop(3);
             }
+        } else {
+            $mysqlConnect = $this->pool->pop(3);
+        }
+        if (!$mysqlConnect->connected) {
+            $mysqlConnect = $this->createConnect();
         }
         echo 'fetch '.$this->pool->length()."\n";
         $unique = spl_object_hash($mysqlConnect);
@@ -64,5 +71,11 @@ class Pool {
         unset($this->popBox[$unique]);
         echo 'recycle '.$this->pool->length()."\n";
         echo 'recycle popBox length'.count($this->popBox)."\n";
+    }
+    
+    public function gc() {
+        swoole_timer_tick(60000, function () {
+            
+        });
     }
 }
