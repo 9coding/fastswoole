@@ -32,7 +32,7 @@ class Pool {
             $mysqlConnect = $this->createConnect();
             $this->pool->push($mysqlConnect);
         }
-        echo 'fetch '.$this->connected."\n";
+        echo 'fetch '.$this->pool->length()."\n";
         $unique = spl_object_hash($mysqlConnect);
         $this->popBox[$unique] = 1;
         return $mysqlConnect;
@@ -55,6 +55,6 @@ class Pool {
             $this->pool->push($connect);
         }
         unset($this->popBox[$unique]);
-        echo 'recycle '.$this->connected."\n";
+        echo 'recycle '.$this->pool->length()."\n";
     }
 }
