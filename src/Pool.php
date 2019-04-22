@@ -16,7 +16,7 @@ class Pool {
     public $maxConnect;
 
     public function __construct() {
-        $type = strtolower(get_class($this));
+        $type = array_pop(explode('\\', strtolower(get_class($this))));
         echo 'type class name '.$type."\n";
         $this->maxConnect = Core::$app['config']->get('db.'.$type.'.max_connnect', 5);
         $this->pool = new Channel($this->maxConnect);
@@ -29,14 +29,19 @@ class Pool {
     }
     
     public function fetch() {
-        $mysqlConnect = $this->pool->pop();
-        if (!$mysqlConnect->connected) {
+        if ($this->pool->isEmpty()) {
             $mysqlConnect = $this->createConnect();
-            $this->pool->push($mysqlConnect);
+        } else {
+            $mysqlConnect = $this->pool->pop();
+            if (!$mysqlConnect->connected) {
+                $mysqlConnect = $this->createConnect();
+                $this->pool->push($mysqlConnect);
+            }
         }
         echo 'fetch '.$this->pool->length()."\n";
         $unique = spl_object_hash($mysqlConnect);
         $this->popBox[$unique] = 1;
+        echo 'fetch popBox length'.count($this->popBox)."\n";
         return $mysqlConnect;
     }
     
@@ -58,5 +63,6 @@ class Pool {
         }
         unset($this->popBox[$unique]);
         echo 'recycle '.$this->pool->length()."\n";
+        echo 'recycle popBox length'.count($this->popBox)."\n";
     }
 }
