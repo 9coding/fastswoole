@@ -1,6 +1,6 @@
 <?php
 
-namespace FastSwoole\Middleware;
+namespace FastSwoole;
 
 use FastSwoole\Core;
 

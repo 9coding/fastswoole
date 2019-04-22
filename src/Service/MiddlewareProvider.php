@@ -4,7 +4,7 @@ namespace FastSwoole\Service;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use FastSwoole\Middleware\MiddlewareManager;
+use FastSwoole\MiddlewareManager;
 
 class MiddlewareProvider implements ServiceProviderInterface {
 
