@@ -11,16 +11,14 @@ class Pool {
     
     public $connected = 0;
     
-    public $popBox = [];
+    public $maxConnect;
     
-    public $maxConnect = 50;
-    
-    public $minConnect = 10;
+    public $minConnect = 5;
 
     public function __construct() {
         $className = explode('\\', strtolower(get_class($this)));
         $classType = array_pop($className);
-        $this->maxConnect = Core::$app['config']->get('db.'.$classType.'.max_connnect', 30);
+        $this->maxConnect = Core::$app['config']->get('db.'.$classType.'.max_connnect', 10);
         $this->pool = new Channel($this->maxConnect+1);
         while ($this->connected < $this->minConnect) {
             $mysqlConnect = $this->createConnect();
@@ -45,31 +43,21 @@ class Pool {
             $mysqlConnect = $this->createConnect();
         }
         echo date('H;i;s').'fetch pop后连接池剩余长度'.$this->pool->length()."\n";
-        $unique = spl_object_hash($mysqlConnect);
-        $this->popBox[$unique] = 1;
-        echo date('H;i;s').'fetch popBox存储对象数量'.count($this->popBox)."\n";
         return $mysqlConnect;
     }
     
     public function recycle($connect) {
-        $unique = spl_object_hash($connect);
         if (!$connect || !$connect->connected) {
             $this->connected--;
-            unset($this->popBox[$unique]);
             return false;
         }
         if ($this->connected > $this->maxConnect) {
             $this->connected--;
         }
-        if (!isset($this->popBox[$unique])) {
-            return false;
-        }
         if ($this->pool->length() < $this->maxConnect) {
             $this->pool->push($connect);
         }
-        unset($this->popBox[$unique]);
         echo date('H;i;s').'recycle push后连接池剩余长度'.$this->pool->length()."\n";
-        echo date('H;i;s').'recycle popBox存储对象数量'.count($this->popBox)."\n";
     }
     
     public function gc() {

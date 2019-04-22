@@ -11,6 +11,7 @@ class MysqlProvider implements ServiceProviderInterface {
     public function register(Container $pimple) {
         $pimple['mysql'] = function ($c) {
             $mysqlpool = new MysqlPool();
+            $mysqlpool->setDefer();
             return $mysqlpool;
         };
     }

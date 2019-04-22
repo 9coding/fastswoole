@@ -9,6 +9,7 @@ use FastSwoole\Service\ErrorProvider;
 use FastSwoole\Service\LogProvider;
 use FastSwoole\Service\MiddlewareProvider;
 use League\Pipeline\StageInterface;
+use FastSwoole\Pool\Mysql as MysqlPool;
 
 class Core {
     
@@ -23,6 +24,9 @@ class Core {
                 self::addService(new $service);
             }
         }
+        $mysqlpool = new MysqlPool();
+        $mysqlpool->setDefer();
+        self::$app['mysql'] = $mysqlpool;
     }
     
     private static function registeService() {
