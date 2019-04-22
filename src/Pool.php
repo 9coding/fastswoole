@@ -13,16 +13,15 @@ class Pool {
     
     public $popBox = [];
     
-    public $maxConnect = 100;
+    public $maxConnect = 50;
     
     public $minConnect = 10;
 
     public function __construct() {
         $className = explode('\\', strtolower(get_class($this)));
         $classType = array_pop($className);
-        echo 'type class name '.$classType."\n";
-        $this->maxConnect = Core::$app['config']->get('db.'.$classType.'.max_connnect', 5);
-        $this->pool = new Channel($this->maxConnect);
+        $this->maxConnect = Core::$app['config']->get('db.'.$classType.'.max_connnect', 30);
+        $this->pool = new Channel($this->maxConnect+1);
         while ($this->connected < $this->minConnect) {
             $mysqlConnect = $this->createConnect();
             $this->pool->push($mysqlConnect);
@@ -42,19 +41,19 @@ class Pool {
         } else {
             $mysqlConnect = $this->pool->pop(3);
         }
-        if (!$mysqlConnect->connected) {
+        if (!$mysqlConnect || !$mysqlConnect->connected) {
             $mysqlConnect = $this->createConnect();
         }
-        echo 'fetch '.$this->pool->length()."\n";
+        echo date('H;i;s').'fetch pop后连接池剩余长度'.$this->pool->length()."\n";
         $unique = spl_object_hash($mysqlConnect);
         $this->popBox[$unique] = 1;
-        echo 'fetch popBox length'.count($this->popBox)."\n";
+        echo date('H;i;s').'fetch popBox存储对象数量'.count($this->popBox)."\n";
         return $mysqlConnect;
     }
     
     public function recycle($connect) {
         $unique = spl_object_hash($connect);
-        if (!$connect->connected) {
+        if (!$connect || !$connect->connected) {
             $this->connected--;
             unset($this->popBox[$unique]);
             return false;
@@ -69,8 +68,8 @@ class Pool {
             $this->pool->push($connect);
         }
         unset($this->popBox[$unique]);
-        echo 'recycle '.$this->pool->length()."\n";
-        echo 'recycle popBox length'.count($this->popBox)."\n";
+        echo date('H;i;s').'recycle push后连接池剩余长度'.$this->pool->length()."\n";
+        echo date('H;i;s').'recycle popBox存储对象数量'.count($this->popBox)."\n";
     }
     
     public function gc() {

@@ -9,7 +9,7 @@ return [
         'database' => 'chatroom',
         'charset' => 'utf8mb4',
         'timeout' => 5,
-        'max_connnect' => 10,
+        'max_connnect' => 50,
     ],
     'redis' => [
         'host' => '127.0.0.1',
