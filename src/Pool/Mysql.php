@@ -12,6 +12,7 @@ class Mysql extends DBPool {
         $mysqlConfig = Core::$app['config']->get('db.mysql');
         $mysqlConnect = new CoMysql();
         $mysqlConnect->connect($mysqlConfig);
+        $mysqlConnect->setDefer();
         return $mysqlConnect;
     }
 }
