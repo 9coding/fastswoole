@@ -7,7 +7,6 @@ use function FastRoute\cachedDispatcher;
 use FastRoute\Dispatcher as RouteDispatcher;
 use FastSwoole\Exception\ServerException;
 use FastSwoole\Core;
-use FastSwoole\Model;
 
 class Route {
 
