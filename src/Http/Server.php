@@ -188,7 +188,8 @@ class Server {
             $response->end($error->response());
         } catch (\Exception $exc) {
             $response->status($exc->getCode());
-            $response->end($exc->getMessage());
+            $excMsg = 'File '.$exc->getFile().' in line '.$exc->getLine().'. Error is '.$exc->getMessage();
+            $response->end($excMsg);
         }
     }
 }
