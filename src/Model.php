@@ -19,4 +19,9 @@ class Model {
     public function __destruct() {
         Core::$app['mysql']->recycle($this->model);
     }
+    
+    public function query($sql, $timeout = 5) {
+        $this->model->query($sql, $timeout);
+        return $this->model->recv();
+    }
 }

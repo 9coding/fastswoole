@@ -7,8 +7,6 @@ use FastSwoole\Model;
 class User extends Model{
 
     public function getAllData() {
-        $result = $this->model->query('select * from chatroom_user');
-        $list = $result->recv();
-        return $list;
+        return $this->query('select * from chatroom_user');
     }
 }
