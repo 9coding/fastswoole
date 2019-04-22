@@ -97,8 +97,9 @@ class Route {
                 $methodParams = array();
                 foreach ($reflactionMethod->getParameters() as $param) {
                     $paramType = $param->getType();
-                    if ($paramType instanceof Model) {
-                        $methodParams[] = new $paramType;
+                    if (!$paramType->isBuiltin()) {
+                        $paramObject = strval($paramType);
+                        $methodParams[] = new $paramObject;
                     } else {
                         $methodParams[] = $param->getDefaultValue();
                     }
