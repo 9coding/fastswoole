@@ -4,6 +4,7 @@ namespace FastSwoole\Pool;
 
 use Swoole\Coroutine\MySQL as CoMysql;
 use FastSwoole\Pool as DBPool;
+use FastSwoole\Core;
 
 class Mysql extends DBPool {
     
