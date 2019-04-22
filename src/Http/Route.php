@@ -59,11 +59,13 @@ class Route {
             $url = strtolower(trim($url, '/'));
         }
         $urlPart = explode('/', $url);
-        $appConfig = Core::$container['config'];
+        $appConfig = Core::$app['config'];
+        $defaultController = $appConfig->get('app.http.default_controller');
+        $defaultAction = $appConfig->get('app.http.default_action');
         if ($url == '/') {
-            $routeUrl = $appConfig['default_controller'].'/'.$appConfig['default_action'];
+            $routeUrl = $defaultController.'/'.$defaultAction;
         } elseif (count($urlPart) == 1) {
-            $routeUrl = $urlPart[0].'/'.$appConfig['default_action'];
+            $routeUrl = $urlPart[0].'/'.$defaultAction;
         } elseif (count($urlPart) == 2) {
             $routeUrl = $urlPart[0].'/'.$urlPart[1];
         } else {
