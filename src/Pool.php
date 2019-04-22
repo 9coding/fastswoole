@@ -13,18 +13,18 @@ class Pool {
     
     public $maxConnect;
     
-    public $minConnect = 5;
+//    public $minConnect = 5;
 
     public function __construct() {
         $className = explode('\\', strtolower(get_class($this)));
         $classType = array_pop($className);
         $this->maxConnect = Core::$app['config']->get('db.'.$classType.'.max_connnect', 10);
         $this->pool = new Channel($this->maxConnect+1);
-        while ($this->connected < $this->minConnect) {
-            $mysqlConnect = $this->createConnect();
-            $this->pool->push($mysqlConnect);
-            $this->connected++;
-        }
+//        while ($this->connected < $this->minConnect) {
+//            $mysqlConnect = $this->createConnect();
+//            $this->pool->push($mysqlConnect);
+//            $this->connected++;
+//        }
         echo 'init length '.$this->pool->length()."\n";
     }
     
