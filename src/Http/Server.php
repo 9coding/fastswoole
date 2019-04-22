@@ -153,7 +153,6 @@ class Server {
             swoole_set_process_name('task worker process '.$this->config['process_name']);
         } else {
             swoole_set_process_name('event worker process '.$this->config['process_name']);
-//            Core::addService(new MysqlProvider());
         }
     }
     

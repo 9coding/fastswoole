@@ -7,7 +7,7 @@ return [
         'worker_num' => 2,
         'task_worker_num' => 4,
         'daemonize' => 0,
-        'max_request' => 5000,
+        'max_request' => 10000,
         'open_cpu_affinity' => 1,
         'open_tcp_nodelay' => 1,
         'dispatch_mode' => 3,
@@ -20,7 +20,7 @@ return [
         'process_name' => 'fastswoole',
         'document_root' => ROOT_DIR.'/public',
         'enable_static_handler' => true,
-        'max_coroutine' => 3000,//根据实际业务的压测结果设置该值，默认为3000
+        'max_coroutine' => 5000,//根据实际业务的压测结果设置该值，默认为3000
     ],
 
     'websocket' => [

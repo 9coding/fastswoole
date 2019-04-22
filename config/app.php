@@ -13,7 +13,6 @@ return [
             FastSwoole\Service\RouteProvider::class,
             FastSwoole\Service\HttpServerProvider::class,
             FastSwoole\Service\LanguageProvider::class,
-//            FastSwoole\Service\MysqlProvider::class,
         ]
     ],
 

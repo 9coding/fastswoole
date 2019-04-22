@@ -24,7 +24,7 @@ class Core {
                 self::addService(new $service);
             }
         }
-        self::$app['mysql'] = new MysqlPool();;
+        self::$app['mysql'] = new MysqlPool();
     }
     
     private static function registeService() {
