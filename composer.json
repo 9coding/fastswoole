@@ -13,8 +13,8 @@
     ],
     "require": {
         "php": ">=7.2.0",
-        "ext-phpredis": "^4.3",
-        "ext-swoole": "^4.3",
+        "ext-redis": ">=4.3",
+        "ext-swoole": ">=4.3",
         "monolog/monolog": "@stable",
         "nikic/fast-route": "^1.3",
         "mongodb/mongodb": "^1.4",

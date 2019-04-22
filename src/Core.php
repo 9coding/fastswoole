@@ -4,10 +4,10 @@ namespace FastSwoole;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Fastapi\Service\ConfigProvider;
-use Fastapi\Service\ErrorProvider;
-use Fastapi\Service\LogProvider;
-use Fastapi\Service\MiddlewareProvider;
+use FastSwoole\Service\ConfigProvider;
+use FastSwoole\Service\ErrorProvider;
+use FastSwoole\Service\LogProvider;
+use FastSwoole\Service\MiddlewareProvider;
 use League\Pipeline\StageInterface;
 
 class Core {

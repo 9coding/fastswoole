@@ -3,7 +3,7 @@
 namespace FastSwoole\Exception;
 
 use Exception;
-use Fastapi\Core;
+use FastSwoole\Core;
 
 class ServerException extends Exception {
 
