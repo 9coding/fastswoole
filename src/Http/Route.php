@@ -7,6 +7,7 @@ use function FastRoute\cachedDispatcher;
 use FastRoute\Dispatcher as RouteDispatcher;
 use FastSwoole\Exception\ServerException;
 use FastSwoole\Core;
+use FastSwoole\Model;
 
 class Route {
 
@@ -90,7 +91,20 @@ class Route {
                 $beforeActionResult = $controller->beforeAction();
             }
             if ($beforeActionResult === true) {
-                $controller->$currentAction();
+                $reflactionMethod = new \ReflectionMethod($currentController, $currentAction);
+                $methodParams = array();
+                foreach ($reflactionMethod->getParameters() as $param) {
+                    $paramType = $param->getType();
+                    if ($paramType instanceof Model) {
+                        $methodParams[] = new $paramType;
+                    } else {
+                        $methodParams[] = $param->getDefaultValue();
+                    }
+                }
+                call_user_func_array(array($controller, $currentAction), $methodParams);
+                foreach ($methodParams as $param) {
+                    unset($param);
+                }
             } else {
                 throw new ServerException(403, $beforeActionResult);
             }

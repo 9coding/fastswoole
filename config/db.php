@@ -6,7 +6,7 @@ return [
         'port' => 3306,
         'user' => 'root',
         'password' => '820819',
-        'database' => 'fastswoole',
+        'database' => 'chatroom',
         'charset' => 'utf8mb4',
         'timeout' => 5,
         'max_connnect' => 10,

@@ -1,9 +1,9 @@
 <?php
 
-namespace application\v1\controller;
+namespace application\controller;
 
-use Fastapi\Http\Controller;
-use application\v1\model\Api;
+use FastSwoole\Http\Controller;
+use application\model\User;
 
 class Index extends Controller {
     
@@ -14,9 +14,8 @@ class Index extends Controller {
 //        return true;
 //    }
 
-    public function indexAction() {
-        $apiModel = new Api();
-        $apiConfig = $apiModel->getAllData();
-        $this->response->sendJson($apiConfig);
+    public function indexAction(User $userModel) {
+        $userList = $userModel->getAllData();
+        $this->response->sendJson($userList);
     }
 }
