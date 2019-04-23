@@ -22,33 +22,43 @@ class Pool {
         $this->config = Core::$app['config']->get('db.'.$classType);
         if (isset($this->config['max_connnect']) && $this->config['max_connnect'] > 0) {
             $this->maxConnect = $this->config['max_connnect'];
+            $this->pool = new Channel($this->maxConnect+1);
+        } else {
+            $this->pool = false;
         }
-        $this->pool = new Channel($this->maxConnect+1);
     }
     
     public function fetch() {
-        if ($this->pool->isEmpty()) {
-            if ($this->connected < $this->maxConnect) {
-                $mysqlConnect = $this->createConnect($this->config);
-                $this->connected++;
-            } else {
-                $mysqlConnect = $this->pool->pop(3);
-            }
+        if ($this->pool === false) {
+            $dbConnect = $this->createConnect($this->config);
         } else {
-            $mysqlConnect = $this->pool->pop(3);
+            if ($this->pool->isEmpty()) {
+                if ($this->connected < $this->maxConnect) {
+                    $dbConnect = $this->createConnect($this->config);
+                    $this->connected++;
+                } else {
+                    $dbConnect = $this->pool->pop(3);
+                }
+            } else {
+                $dbConnect = $this->pool->pop(3);
+            }
+            echo date('H;i;s').'fetch pop后连接池剩余长度'.$this->pool->length()."\n";
         }
-        if (!$mysqlConnect || !$mysqlConnect->connected) {
+        if (!$dbConnect || !$dbConnect->connected) {
             $this->connected--;
             throw new ServerException(504, 'Gateway Time-out');
         }
-        echo date('H;i;s').'fetch pop后连接池剩余长度'.$this->pool->length()."\n";
-        return $mysqlConnect;
+        return $dbConnect;
     }
     
     public function recycle($connect) {
         if (!$connect || !$connect->connected) {
             $this->connected--;
             return false;
+        }
+        if ($this->pool === false) {
+            unset($connect);
+            return true;
         }
         if ($this->connected > $this->maxConnect) {
             $this->connected--;

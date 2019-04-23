@@ -10,6 +10,7 @@ class Redis extends DBPool {
     public function createConnect($redisConfig) {
         $redisConnect = new CoRedis();
         $redisConnect->connect($redisConfig);
+        $redisConnect->setDefer();
         return $redisConnect;
     }
 }

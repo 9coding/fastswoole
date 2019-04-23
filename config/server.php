@@ -24,6 +24,17 @@ return [
     ],
 
     'websocket' => [
-        
+        'monitor_ip' => '0.0.0.0',
+        'monitor_port' => 9528,
+        'worker_num' => 2,
+        'task_worker_num' => 2,
+        'daemonize' => 0,
+        'max_request' => 5000,
+        'open_cpu_affinity' => 1,
+        'open_tcp_nodelay' => 1,
+        'dispatch_mode' => 3,
+        'log_file' => TEMP_DIR . '/swoole.log',
+        'pid_file' => TEMP_DIR . '/server.pid',
+        'process_name' => 'fastswoole',
     ]
 ];

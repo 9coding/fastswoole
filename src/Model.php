@@ -6,27 +6,27 @@ use FastSwoole\Core;
 
 class Model {
     
-    public $model;
+    public $db;
     
     public $table;
     
     public $primaryKey;
 
     public function __construct() {
-        $this->model = Core::$app['mysql']->fetch();
+        $this->db = Core::$app['mysql']->fetch();
     }
     
     public function __destruct() {
-        Core::$app['mysql']->recycle($this->model);
+        Core::$app['mysql']->recycle($this->db);
     }
     
     public function query($sql, $timeout = 5) {
-        $this->model->query($sql, $timeout);
-        return $this->model->recv($timeout);
+        $this->db->query($sql, $timeout);
+        return $this->db->recv($timeout);
     }
     
     public function execute($sql, $bind = '') {
-        $stmt = $this->model->prepare($sql);
+        $stmt = $this->db->prepare($sql);
         return $stmt->execute($bind);
     }
 }

@@ -10,6 +10,7 @@ use FastSwoole\Service\LogProvider;
 use FastSwoole\Service\MiddlewareProvider;
 use League\Pipeline\StageInterface;
 use FastSwoole\Pool\Mysql as MysqlPool;
+use FastSwoole\Pool\Redis as RedisPool;
 
 class Core {
     
@@ -25,6 +26,7 @@ class Core {
             }
         }
         self::$app['mysql'] = new MysqlPool();
+//        self::$app['redis'] = new RedisPool();
     }
     
     private static function registeService() {
