@@ -17,6 +17,8 @@ return [
     ],
 
     'websocket' => [
-        
+        'service' => [
+            FastSwoole\Service\WebsocketProvider::class,
+        ]
     ]
 ];
