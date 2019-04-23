@@ -9,6 +9,8 @@ use League\Pipeline\StageInterface;
 class ThrottleRequests extends StageInterface {
     
     private $throttle;
+    
+    public $params;
 
     public function __construct($params) {
         $this->params = $params;

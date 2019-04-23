@@ -6,7 +6,6 @@ use FastSwoole\Core;
 use FastSwoole\Server as FastSwooleServer;
 use League\Pipeline\Pipeline;
 use Swoole\WebSocket\Server as WebSocketServer;
-use Swoole\Server as SwooleServer;
 
 class Server extends FastSwooleServer {
     
@@ -29,40 +28,34 @@ class Server extends FastSwooleServer {
         $this->server->on('Close', [$this, 'onClose']);
         $this->server->start();
     }
+    
+    private function dispatch($target, $data) {
+        $result = false;
+        $className = '\application\\websocket\\'.$target;
+        if (class_exists($className)) {
+            $reflaction = new \ReflectionClass($className);
+            if ($reflaction->hasMethod('execute')) {
+                $controller = new $className();
+                $result = $controller->execute($data);
+            }
+        }
+        return $result;
+    }
 
-    public function onOpen(SwooleServer $server, $request) {
-        $userlist = [];
-        foreach ($server->connections as $fd) {
-            if ($request->fd != $fd) {
-                $userlist[] = $fd;
-                $server->push($fd, json_encode(array('event'=>'open','type'=>'new_user','target'=>$request->fd)));
-            }
-        }
-        $userlist[] = $request->fd;
-        $server->push($request->fd, json_encode(array('event'=>'open','type'=>'other_user','target'=>$userlist,'self'=>$request->fd)));
-    }
-    
-    public function onMessage(SwooleServer $server, $frame) {
-        $framedata = explode('|+|', $frame->data);
-        echo "receive from {$frame->fd}:$framedata[0],opcode:{$frame->opcode},fin:{$frame->finish}\n";
-        if (isset($framedata[1]) && $framedata[1]) {
-            $server->push($framedata[1], json_encode(array('event'=>'message','type'=>'other','from'=>$frame->fd,'content'=>$framedata[0],'target'=>'你')));
-            $server->push($frame->fd, json_encode(array('event'=>'message','type'=>'self','from'=>$frame->fd,'content'=>$framedata[0],'target'=>$framedata[1])));
+    public function onOpen(WebSocketServer $server, $request) {
+        $result = $this->dispatch('Open', $request);
+        if ($result === false) {
+            $server->disconnect($request->fd);
         } else {
-            foreach ($server->connections as $fd) {
-                if ($frame->fd != $fd) {
-                    $server->push($fd, json_encode(array('event'=>'message','type'=>'other','from'=>$frame->fd,'content'=>$framedata[0],'target'=>'所有人')));
-                }
-            }
-            $server->push($frame->fd, json_encode(array('event'=>'message','type'=>'self','from'=>$frame->fd,'content'=>$framedata[0],'target'=>'所有人')));
+            $server->push($request->fd, json_encode(array('event'=>'open','type'=>'other_user','target'=>$result,'self'=>$request->fd)));
         }
     }
     
-    public function onClose(SwooleServer $server, $closefd) {
-        foreach ($server->connections as $fd) {
-            if ($closefd != $fd) {
-                $server->push($fd, json_encode(array('event'=>'close','type'=>'quit','target'=>$closefd)));
-            }
-        }
+    public function onMessage(WebSocketServer $server, $frame) {
+        $result = $this->dispatch('Message', $frame);
+    }
+    
+    public function onClose(WebSocketServer $server, $closefd) {
+        $result = $this->dispatch('Close', $closefd);
     }
 }

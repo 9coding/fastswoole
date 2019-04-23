@@ -17,6 +17,10 @@ return [
     ],
 
     'websocket' => [
+        'middleware' => [
+            'WordFilter' => ['fuck','shit']
+        ],
+        
         'service' => [
             FastSwoole\Service\WebsocketProvider::class,
         ]
