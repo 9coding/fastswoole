@@ -27,7 +27,7 @@ return [
         'monitor_ip' => '0.0.0.0',
         'monitor_port' => 9528,
         'worker_num' => 2,
-        'task_worker_num' => 2,
+//        'task_worker_num' => 2,//开启此项需要websocket设置ontask回调
         'daemonize' => 0,
         'max_request' => 5000,
         'open_cpu_affinity' => 1,
