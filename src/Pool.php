@@ -23,8 +23,9 @@ class Pool {
         if (isset($this->config['max_connnect']) && $this->config['max_connnect'] > 0) {
             $this->maxConnect = $this->config['max_connnect'];
             $this->pool = new Channel($this->maxConnect+1);
-            swoole_timer_tick(3000, function () {
-                echo date('H:i:s').' - 当前连接池拥有的连接数量：'.$this->pool->length()."\n";
+            $poolobject = $this->pool;
+            swoole_timer_tick(3000, function () use($poolobject) {
+                echo date('H:i:s').' - 当前连接池拥有的连接数量：'.$poolobject->length()."\n";
             });
         } else {
             $this->pool = false;
