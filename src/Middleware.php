@@ -4,7 +4,7 @@ namespace FastSwoole;
 
 use FastSwoole\Core;
 
-class MiddlewareManager {
+class Middleware {
 
     private function getMiddlewares() {
         $middlewares = Core::$app['config']->get('app.'.MODE.'.middleware');

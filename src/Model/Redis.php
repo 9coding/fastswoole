@@ -1,10 +1,10 @@
 <?php
 
-namespace FastSwoole;
+namespace FastSwoole\Model;
 
 use FastSwoole\Core;
 
-class RedisModel {
+class Redis {
     
     public $db;
 

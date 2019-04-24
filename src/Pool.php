@@ -23,6 +23,9 @@ class Pool {
         if (isset($this->config['max_connnect']) && $this->config['max_connnect'] > 0) {
             $this->maxConnect = $this->config['max_connnect'];
             $this->pool = new Channel($this->maxConnect+1);
+            swoole_timer_tick(3000, function () {
+                echo date('H:i:s').' - 当前连接池拥有的连接数量：'.$this->pool->length()."\n";
+            });
         } else {
             $this->pool = false;
         }
@@ -42,7 +45,6 @@ class Pool {
             } else {
                 $dbConnect = $this->pool->pop(3);
             }
-            echo date('H;i;s').'fetch pop后连接池剩余长度'.$this->pool->length()."\n";
         }
         if (!$dbConnect || !$dbConnect->connected) {
             $this->connected--;
@@ -66,6 +68,5 @@ class Pool {
         if ($this->pool->length() < $this->maxConnect) {
             $this->pool->push($connect);
         }
-        echo date('H;i;s').'recycle push后连接池剩余长度'.$this->pool->length()."\n";
     }
 }
