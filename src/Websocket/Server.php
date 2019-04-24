@@ -6,8 +6,11 @@ use FastSwoole\Core;
 use FastSwoole\Server as FastSwooleServer;
 use League\Pipeline\Pipeline;
 use Swoole\WebSocket\Server as WebSocketServer;
+use FastSwoole\Functions\ClassMethod;
 
 class Server extends FastSwooleServer {
+    
+    use ClassMethod;
     
     public $server;
 
@@ -35,8 +38,10 @@ class Server extends FastSwooleServer {
         if (class_exists($className)) {
             $reflaction = new \ReflectionClass($className);
             if ($reflaction->hasMethod('execute')) {
+                $methodParams = $this->analyzeParameter($className, 'execute');
+                array_unshift($methodParams, $data);
                 $controller = new $className();
-                $result = $controller->execute($data);
+                $result = call_user_func_array(array($controller, 'execute'), $methodParams);
             }
         }
         return $result;
@@ -52,6 +57,12 @@ class Server extends FastSwooleServer {
     }
     
     public function onMessage(WebSocketServer $server, $frame) {
+        $pipeline = new Pipeline();
+        $registeredMiddlewares = Core::$app['middleware']->fetchMiddleware();
+        foreach ($registeredMiddlewares as $middleware) {
+            $pipeline = $pipeline->pipe($middleware);
+        }
+        $frame->data = $pipeline->process($frame->data);
         $result = $this->dispatch('Message', $frame);
     }
     

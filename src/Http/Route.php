@@ -7,8 +7,11 @@ use function FastRoute\cachedDispatcher;
 use FastRoute\Dispatcher as RouteDispatcher;
 use FastSwoole\Exception\ServerException;
 use FastSwoole\Core;
+use FastSwoole\Functions\ClassMethod;
 
 class Route {
+    
+    use ClassMethod;
 
     private $dispatcher;
     
@@ -92,17 +95,18 @@ class Route {
                 $beforeActionResult = $controller->beforeAction();
             }
             if ($beforeActionResult === true) {
-                $reflactionMethod = new \ReflectionMethod($currentController, $currentAction);
-                $methodParams = array();
-                foreach ($reflactionMethod->getParameters() as $param) {
-                    $paramType = $param->getType();
-                    if (!$paramType->isBuiltin()) {
-                        $paramObject = strval($paramType);
-                        $methodParams[] = new $paramObject;
-                    } else {
-                        $methodParams[] = $param->getDefaultValue();
-                    }
-                }
+//                $reflactionMethod = new \ReflectionMethod($currentController, $currentAction);
+//                $methodParams = array();
+//                foreach ($reflactionMethod->getParameters() as $param) {
+//                    $paramType = $param->getType();
+//                    if (!$paramType->isBuiltin()) {
+//                        $paramObject = strval($paramType);
+//                        $methodParams[] = new $paramObject;
+//                    } else {
+//                        $methodParams[] = $param->getDefaultValue();
+//                    }
+//                }
+                $methodParams = $this->analyzeParameter($currentController, $currentAction);
                 call_user_func_array(array($controller, $currentAction), $methodParams);
                 foreach ($methodParams as $param) {
                     unset($param);
