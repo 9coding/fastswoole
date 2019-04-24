@@ -2,16 +2,18 @@
 
 namespace application\websocket;
 
+use application\model\User;
+
 class Open {
 
-    public function execute($request) {
-        $userlist = [];
-        foreach ($server->connections as $fd) {
-            if ($request->fd != $fd) {
-                $userlist[] = $fd;
-                $server->push($fd, json_encode(array('event'=>'open','type'=>'new_user','target'=>$request->fd)));
-            }
+    public function execute($request, User $userModel) {
+        $result = true;
+        $userInfo = $userModel->getInfoByFd($request->fd);
+        if (!$userInfo) {
+            $result = $userModel->insertData($request->fd);
+        } elseif ($userInfo['user_status'] == 1) {
+            $result = false;
         }
-        $userlist[] = $request->fd;
+        return $result;
     }
 }
