@@ -45,7 +45,7 @@ class Pool {
         }
         if (!$dbConnect || !$dbConnect->connected) {
             $this->connected--;
-            throw new ServerException(504, 'Gateway Time-out');
+            throw new ServerException(504, 'DB连接不可用');
         }
         echo date('H:i:s').' - fetch后当前连接池拥有的连接数量：'.$this->pool->length()."\n";
         return $dbConnect;

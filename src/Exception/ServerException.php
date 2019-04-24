@@ -14,7 +14,8 @@ class ServerException extends Exception {
         404 => 'Not Found',
         405 => 'Forbidden Method',
         500 => 'Internet Server Error',
-        503 => 'Service Unavailable'
+        503 => 'Service Unavailable',
+        504 => 'Gateway Time-out'
     ];
     
     public function __construct($httpcode = 200, $msg = '') {
