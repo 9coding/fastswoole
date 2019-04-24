@@ -23,10 +23,6 @@ class Pool {
         if (isset($this->config['max_connnect']) && $this->config['max_connnect'] > 0) {
             $this->maxConnect = $this->config['max_connnect'];
             $this->pool = new Channel($this->maxConnect+1);
-            $poolobject = $this->pool;
-            swoole_timer_tick(3000, function () use($poolobject) {
-                echo date('H:i:s').' - 当前连接池拥有的连接数量：'.$poolobject->length()."\n";
-            });
         } else {
             $this->pool = false;
         }
@@ -51,6 +47,7 @@ class Pool {
             $this->connected--;
             throw new ServerException(504, 'Gateway Time-out');
         }
+        echo date('H:i:s').' - fetch后当前连接池拥有的连接数量：'.$this->pool->length()."\n";
         return $dbConnect;
     }
     
@@ -69,5 +66,6 @@ class Pool {
         if ($this->pool->length() < $this->maxConnect) {
             $this->pool->push($connect);
         }
+        echo date('H:i:s').' - recycle后当前连接池拥有的连接数量：'.$this->pool->length()."\n";
     }
 }
