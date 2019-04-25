@@ -2,9 +2,12 @@
 
 namespace application\websocket;
 
-class Message {
+use FastSwoole\Websocket\Controller;
 
-    public function execute($frame) {
+class Message extends Controller {
+
+    public function execute() {
+        $frame = $this->param;
         $framedata = explode('|+|', $frame->data);
         echo "receive from {$frame->fd}:$framedata[0],opcode:{$frame->opcode},fin:{$frame->finish}\n";
         if (isset($framedata[1]) && $framedata[1]) {

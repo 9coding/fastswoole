@@ -2,12 +2,15 @@
 
 namespace application\websocket;
 
-class Close {
+use FastSwoole\Websocket\Controller;
 
-    public function execute($closefd) {
-        foreach ($server->connections as $fd) {
-            if ($closefd != $fd) {
-                $server->push($fd, json_encode(array('event'=>'close','type'=>'quit','target'=>$closefd)));
+class Close extends Controller {
+
+    public function execute(User $userModel) {
+        $userList = $userModel->getAllData();
+        foreach ($userList as $user) {
+            if ($this->param != $user['user_fd']) {
+                $this->server->push($user['user_fd'], json_encode(array('event'=>'close','type'=>'quit','target'=>$this->param)));
             }
         }
     }
