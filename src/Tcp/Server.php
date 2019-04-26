@@ -1,11 +1,11 @@
 <?php
 
-namespace FastSwoole\Websocket;
+namespace FastSwoole\Tcp;
 
 use FastSwoole\Core;
 use FastSwoole\Server as FastSwooleServer;
 use League\Pipeline\Pipeline;
-use Swoole\WebSocket\Server as WebSocketServer;
+use Swoole\Server;
 use FastSwoole\Functions\ClassMethod;
 
 class Server extends FastSwooleServer {
@@ -15,11 +15,11 @@ class Server extends FastSwooleServer {
     public $server;
 
     public function __construct() {
-        $this->config = Core::$app['config']->get('server.websocket');
+        $this->config = Core::$app['config']->get('server.tcp');
     }
 
     public function run() {
-        $this->server = new WebSocketServer($this->config['monitor_ip'], $this->config['monitor_port'], SWOOLE_PROCESS);
+        $this->server = new Server($this->config['monitor_ip'], $this->config['monitor_port'], SWOOLE_PROCESS);
         $this->setCallback();
         $this->server->on('Open', [$this, 'onOpen']);
         $this->server->on('Message', [$this, 'onMessage']);

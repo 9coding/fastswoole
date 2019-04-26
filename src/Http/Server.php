@@ -28,12 +28,7 @@ class Server extends FastSwooleServer {
         } else {
             $this->server = new HttpServer($this->config['monitor_ip'], $this->config['monitor_port'], SWOOLE_PROCESS);
         }
-        $this->server->set($this->config);
-        $this->server->on('Start', [$this, 'onMasterStart']);
-	$this->server->on('Shutdown', [$this, 'onShutdown']);
-	$this->server->on('ManagerStart', [$this, 'onManagerStart']);
-        $this->server->on('WorkerStart', [$this, 'onWorkerStart']);
-        $this->server->on('WorkerError', [$this, 'onWorkerError']);
+        $this->setCallback();
         $this->server->on('Task', [$this, 'onTask']);
         $this->server->on('Finish', [$this, 'onFinish']);
         $this->server->on('Request', [$this, 'onRequest']);

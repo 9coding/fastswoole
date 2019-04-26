@@ -97,6 +97,15 @@ class Server {
         return true;
     }
     
+    public function setCallback() {
+        $this->server->set($this->config);
+        $this->server->on('Start', [$this, 'onMasterStart']);
+	$this->server->on('Shutdown', [$this, 'onShutdown']);
+	$this->server->on('ManagerStart', [$this, 'onManagerStart']);
+        $this->server->on('WorkerStart', [$this, 'onWorkerStart']);
+        $this->server->on('WorkerError', [$this, 'onWorkerError']);
+    }
+    
     public function onMasterStart(SwooleServer $server) {
         swoole_set_process_name('master process ' . $this->config['process_name']);
     }
