@@ -21,9 +21,7 @@ class Server extends FastSwooleServer {
     public function run() {
         $this->server = new Server($this->config['monitor_ip'], $this->config['monitor_port'], SWOOLE_PROCESS, SWOOLE_SOCK_UDP);
         $this->setCallback();
-        $this->server->on('Open', [$this, 'onOpen']);
-        $this->server->on('Message', [$this, 'onMessage']);
-        $this->server->on('Close', [$this, 'onClose']);
+        $this->server->on('Packet', [$this, 'onPacket']);
         $this->server->start();
     }
     
@@ -38,30 +36,13 @@ class Server extends FastSwooleServer {
             }
         }
     }
-
-    public function onOpen(WebSocketServer $server, $request) {
-        try {
-            $this->dispatch('Open', $request);
-        } catch (\Exception $exc) {
-            $server->push($request->fd, $exc->getMessage());
-        }
-    }
     
-    public function onMessage(WebSocketServer $server, $frame) {
+    public function onPacket(Server $server, $data, $client_info) {
         $pipeline = new Pipeline();
         $registeredMiddlewares = Core::$app['middleware']->fetchMiddleware();
         foreach ($registeredMiddlewares as $middleware) {
             $pipeline = $pipeline->pipe($middleware);
         }
-        $frame->data = $pipeline->process($frame->data);
-        try {
-            $this->dispatch('Message', $frame);
-        } catch (\Exception $exc) {
-            $server->push($frame->fd, $exc->getMessage());
-        }
-    }
-    
-    public function onClose(WebSocketServer $server, $closefd) {
-        $this->dispatch('Close', $closefd);
+        $data = $pipeline->process($data);
     }
 }

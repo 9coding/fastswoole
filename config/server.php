@@ -14,8 +14,8 @@ return [
         'chroot' => APP_DIR,
         'user' => 'www-data',
         'group' => 'www-data',
-        'log_file' => TEMP_DIR . '/swoole.log',
-        'pid_file' => TEMP_DIR . '/server.pid',
+        'log_file' => TEMP_DIR . '/swoole_http.log',
+        'pid_file' => TEMP_DIR . '/server_http.pid',
         'use_https' => 0,
         'process_name' => 'fastswoole_http',
         'document_root' => ROOT_DIR.'/public',
@@ -33,8 +33,8 @@ return [
         'open_cpu_affinity' => 1,
         'open_tcp_nodelay' => 1,
         'dispatch_mode' => 3,
-        'log_file' => TEMP_DIR . '/swoole.log',
-        'pid_file' => TEMP_DIR . '/server.pid',
+        'log_file' => TEMP_DIR . '/swoole_websocket.log',
+        'pid_file' => TEMP_DIR . '/server_websocket.pid',
         'process_name' => 'fastswoole_websocket',
     ],
     
@@ -48,8 +48,8 @@ return [
         'open_cpu_affinity' => 1,
         'open_tcp_nodelay' => 1,
         'dispatch_mode' => 3,
-        'log_file' => TEMP_DIR . '/swoole.log',
-        'pid_file' => TEMP_DIR . '/server.pid',
+        'log_file' => TEMP_DIR . '/swoole_tcp.log',
+        'pid_file' => TEMP_DIR . '/server_tcp.pid',
         'process_name' => 'fastswoole_tcp',
     ],
     
@@ -63,8 +63,8 @@ return [
         'open_cpu_affinity' => 1,
         'open_tcp_nodelay' => 1,
         'dispatch_mode' => 3,
-        'log_file' => TEMP_DIR . '/swoole.log',
-        'pid_file' => TEMP_DIR . '/server.pid',
+        'log_file' => TEMP_DIR . '/swoole_udp.log',
+        'pid_file' => TEMP_DIR . '/server_udp.pid',
         'process_name' => 'fastswoole_udp',
     ]
 ];

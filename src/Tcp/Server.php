@@ -4,7 +4,6 @@ namespace FastSwoole\Tcp;
 
 use FastSwoole\Core;
 use FastSwoole\Server as FastSwooleServer;
-use League\Pipeline\Pipeline;
 use Swoole\Server;
 use FastSwoole\Functions\ClassMethod;
 
@@ -21,14 +20,14 @@ class Server extends FastSwooleServer {
     public function run() {
         $this->server = new Server($this->config['monitor_ip'], $this->config['monitor_port'], SWOOLE_PROCESS);
         $this->setCallback();
-        $this->server->on('Open', [$this, 'onOpen']);
-        $this->server->on('Message', [$this, 'onMessage']);
+        $this->server->on('Connect', [$this, 'onConnect']);
+        $this->server->on('Receive', [$this, 'onReceive']);
         $this->server->on('Close', [$this, 'onClose']);
         $this->server->start();
     }
     
-    private function dispatch($target, $data) {
-        $className = '\application\\websocket\\'.$target;
+    private function dispatch($target, ...$data) {
+        $className = '\application\\tcp\\'.$target;
         if (class_exists($className)) {
             $reflaction = new \ReflectionClass($className);
             if ($reflaction->hasMethod('execute')) {
@@ -39,29 +38,15 @@ class Server extends FastSwooleServer {
         }
     }
 
-    public function onOpen(WebSocketServer $server, $request) {
-        try {
-            $this->dispatch('Open', $request);
-        } catch (\Exception $exc) {
-            $server->push($request->fd, $exc->getMessage());
-        }
+    public function onConnect(Server $server, $fd, $reactorId) {
+        
     }
     
-    public function onMessage(WebSocketServer $server, $frame) {
-        $pipeline = new Pipeline();
-        $registeredMiddlewares = Core::$app['middleware']->fetchMiddleware();
-        foreach ($registeredMiddlewares as $middleware) {
-            $pipeline = $pipeline->pipe($middleware);
-        }
-        $frame->data = $pipeline->process($frame->data);
-        try {
-            $this->dispatch('Message', $frame);
-        } catch (\Exception $exc) {
-            $server->push($frame->fd, $exc->getMessage());
-        }
+    public function onReceive(Server $server, $fd, $reactorId, $data) {
+        $this->dispatch('Receive', $fd, $reactorId, $data);
     }
     
-    public function onClose(WebSocketServer $server, $closefd) {
-        $this->dispatch('Close', $closefd);
+    public function onClose(Server $server, $fd, $reactorId) {
+        
     }
 }
