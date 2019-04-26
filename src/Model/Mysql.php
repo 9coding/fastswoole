@@ -28,9 +28,10 @@ class Mysql {
     public function execute($sql, $bind = '') {
         $stmt = $this->db->prepare($sql);
         if ($stmt) {
+            var_dump($bind);
             return $stmt->execute($bind);
         } else {
-            echo $this->db->error;
+            return $this->db->error;
         }
     }
 }
