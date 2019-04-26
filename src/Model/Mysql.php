@@ -27,8 +27,9 @@ class Mysql {
     
     public function execute($sql, $bind = '') {
         $stmt = $this->db->prepare($sql);
+        echo $this->db->error;
+        echo $this->db->errno;
         if ($stmt) {
-            var_dump($bind);
             return $stmt->execute($bind);
         } else {
             return $this->db->error;
