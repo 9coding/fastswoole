@@ -28,7 +28,7 @@ class Mysql {
     public function execute($sql, $bind = '') {
         $stmt = $this->db->prepare($sql);
         if ($stmt) {
-            return $this->db->execute($bind);
+            return $stmt->execute($bind);
         } else {
             echo $this->db->error."\n";
             return false;
