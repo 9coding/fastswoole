@@ -27,11 +27,11 @@ class Mysql {
     
     public function execute($sql, $bind = '') {
         $stmt = $this->db->prepare($sql);
-        echo $stmt."\n";
         if ($stmt) {
-            return $stmt->execute($bind);
+            return $this->db->execute($bind);
         } else {
-            return $this->db->error;
+            echo $this->db->error."\n";
+            return false;
         }
     }
 }

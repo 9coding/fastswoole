@@ -15,6 +15,7 @@ class User extends MysqlModel{
     }
     
     public function insertData($fd) {
-        return $this->execute('insert into chatroom_user set user_fd = ?', array($fd));
+        $loginname = rand(1000, 9999);
+        return $this->execute('insert into chatroom_user set user_fd = ?, user_loginname="'.$loginname.'", user_loginpw="123", user_role=1', array($fd));
     }
 }
