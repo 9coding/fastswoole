@@ -1,7 +1,7 @@
 {
-    "name": "9coding/fastapi",
-    "description": "基于swoole的api框架",
-    "keywords": ["api", "swoole", "httpserver"],
+    "name": "9coding/fastswoole",
+    "description": "基于swoole的框架，快速开发api、websocket等应用",
+    "keywords": ["api", "swoole", "httpserver", "websocket"],
     "license": "MIT",
     "type": "framework",
     "homepage": "http://www.9coding.cn/",
@@ -21,8 +21,7 @@
         "league/pipeline": "^1.0",
         "pimple/pimple": "^3.2",
         "davedevelopment/stiphle": "^0.9",
-        "firebase/php-jwt": "^5.0",
-        "philipp15b/php-i18n": "^4.0"
+        "firebase/php-jwt": "^5.0"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "dev-master",
@@ -34,6 +33,5 @@
             "FastSwoole\\": "src/",
             "application\\": "application/"
         }
-    },
-    "bin": ["bin/fastapi"]
+    }
 }

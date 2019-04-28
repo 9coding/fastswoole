@@ -6,12 +6,12 @@ $executeFile = $argv[0];
 $command = strtolower(trim(($argv[1]) ?? ''));
 $runmode = strtolower(trim(($argv[2]) ?? 'http'));
 $supportCommand = ['start','startd','restart','stop','reload'];
-$supportMode = ['http','websocket'];
+$supportMode = ['http','websocket','tcp','udp'];
 if (!in_array($command, $supportCommand) || !in_array($runmode, $supportMode)) {
-    die('Support command : php '.$executeFile.' start|restart|stop|reload|startd http|websocket');
+    die('Support command : php '.$executeFile.' start|restart|stop|reload|startd  http|websocket|tcp|udp');
 }
 
-define('ROOT_DIR', realpath(__DIR__.'/../'));
+define('ROOT_DIR', realpath(__DIR__));
 define('APP_DIR', ROOT_DIR.'/application');
 define('CONFIG_DIR', ROOT_DIR.'/config');
 define('TEMP_DIR', ROOT_DIR.'/runtime');
