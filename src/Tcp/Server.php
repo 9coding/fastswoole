@@ -27,14 +27,12 @@ class Server extends FastSwooleServer {
     }
     
     private function dispatch($target, ...$data) {
-        $className = '\application\\tcp\\'.$target;
-        if (class_exists($className)) {
-            $reflaction = new \ReflectionClass($className);
-            if ($reflaction->hasMethod('execute')) {
-                $methodParams = $this->analyzeParameter($className, 'execute');
-                $controller = new $className($this->server, $data);
-                call_user_func_array(array($controller, 'execute'), $methodParams);
-            }
+        $className = '\\application\\tcp\\'.$target;
+        $isDispath = $this->analyzeMethod($className, 'execute');
+        if ($isDispath) {
+            $methodParams = $this->analyzeParameter($className, 'execute');
+            $controller = new $className($this->server, $data);
+            call_user_func_array(array($controller, 'execute'), $methodParams);
         }
     }
 

@@ -3,6 +3,16 @@
 namespace FastSwoole\Functions;
 
 trait ClassMethod {
+    
+    public function analyzeMethod($className, $methodName) {
+        if (class_exists($className)) {
+            $reflaction = new \ReflectionClass($className);
+            if ($reflaction->hasMethod($methodName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function analyzeParameter($className, $methodName) {
         $reflactionMethod = new \ReflectionMethod($className, $methodName);

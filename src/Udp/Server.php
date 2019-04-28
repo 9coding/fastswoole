@@ -26,7 +26,7 @@ class Server extends FastSwooleServer {
     }
     
     private function dispatch($target, $data) {
-        $className = '\application\\websocket\\'.$target;
+        $className = '\\application\\udp\\'.$target;
         if (class_exists($className)) {
             $reflaction = new \ReflectionClass($className);
             if ($reflaction->hasMethod('execute')) {
