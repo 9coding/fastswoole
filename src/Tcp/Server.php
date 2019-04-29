@@ -25,23 +25,13 @@ class Server extends FastSwooleServer {
         $this->server->on('Close', [$this, 'onClose']);
         $this->server->start();
     }
-    
-    private function dispatch($target, ...$data) {
-        $className = '\\application\\tcp\\'.$target;
-        $isDispath = $this->analyzeMethod($className, 'execute');
-        if ($isDispath) {
-            $methodParams = $this->analyzeParameter($className, 'execute');
-            $controller = new $className($this->server, $data);
-            call_user_func_array(array($controller, 'execute'), $methodParams);
-        }
-    }
 
     public function onConnect(Server $server, $fd, $reactorId) {
         
     }
     
     public function onReceive(Server $server, $fd, $reactorId, $data) {
-        $this->dispatch('Receive', $fd, $reactorId, $data);
+        $result = $this->dispatchMethod($server, '\\application\\tcp\\Receive', 'execute', $fd, $reactorId, $data);
     }
     
     public function onClose(Server $server, $fd, $reactorId) {

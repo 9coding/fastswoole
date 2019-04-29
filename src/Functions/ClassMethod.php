@@ -28,4 +28,15 @@ trait ClassMethod {
         }
         return $methodParams;
     }
+    
+    public function dispatchMethod($server, $className, $methodName, ...$data) {
+        $result = false;
+        $allowDispatch = $this->analyzeMethod($className, $methodName);
+        if ($allowDispatch) {
+            $methodParams = $this->analyzeParameter($className, $methodName);
+            $controller = new $className($server, $data);
+            $result = call_user_func_array(array($controller, $methodName), $methodParams);
+        }
+        return $result;
+    }
 }

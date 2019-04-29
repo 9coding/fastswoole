@@ -26,22 +26,10 @@ class Server extends FastSwooleServer {
         $this->server->on('Close', [$this, 'onClose']);
         $this->server->start();
     }
-    
-    private function dispatch($target, $data) {
-        $className = '\\application\\websocket\\'.$target;
-        if (class_exists($className)) {
-            $reflaction = new \ReflectionClass($className);
-            if ($reflaction->hasMethod('execute')) {
-                $methodParams = $this->analyzeParameter($className, 'execute');
-                $controller = new $className($this->server, $data);
-                call_user_func_array(array($controller, 'execute'), $methodParams);
-            }
-        }
-    }
 
     public function onOpen(WebSocketServer $server, $request) {
         try {
-            $this->dispatch('Open', $request);
+            $result = $this->dispatchMethod($server, '\\application\\websocket\\Open', 'execute', $request);
         } catch (\Exception $exc) {
             $server->push($request->fd, $exc->getMessage());
         }
@@ -55,13 +43,13 @@ class Server extends FastSwooleServer {
         }
         $frame->data = $pipeline->process($frame->data);
         try {
-            $this->dispatch('Message', $frame);
+            $result = $this->dispatchMethod($server, '\\application\\websocket\\Message', 'execute', $frame);
         } catch (\Exception $exc) {
             $server->push($frame->fd, $exc->getMessage());
         }
     }
     
     public function onClose(WebSocketServer $server, $closefd) {
-        $this->dispatch('Close', $closefd);
+        $result = $this->dispatchMethod($server, '\\application\\websocket\\Close', 'execute', $closefd);
     }
 }

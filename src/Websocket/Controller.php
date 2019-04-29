@@ -12,6 +12,6 @@ class Controller {
 
     public function __construct(WebSocketServer $server, $param) {
         $this->server = $server;
-        $this->param = $param;
+        $this->param = $param[0];
     }
 }
