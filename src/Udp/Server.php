@@ -11,12 +11,6 @@ use FastSwoole\Functions\ClassMethod;
 class Server extends FastSwooleServer {
     
     use ClassMethod;
-    
-    public $server;
-
-    public function __construct() {
-        $this->config = Core::$app['config']->get('server.udp');
-    }
 
     public function run() {
         $this->server = new Server($this->config['monitor_ip'], $this->config['monitor_port'], SWOOLE_PROCESS, SWOOLE_SOCK_UDP);

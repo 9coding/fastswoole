@@ -9,15 +9,8 @@ use League\Pipeline\Pipeline;
 use Swoole\Http\Server as HttpServer;
 use Swoole\Http\Request as HttpRequest;
 use Swoole\Http\Response as HttpResponse;
-use Swoole\Server as SwooleServer;
 
 class Server extends FastSwooleServer {
-    
-    public $server;
-
-    public function __construct() {
-        $this->config = Core::$app['config']->get('server.http');
-    }
     
     public function run() {
         if ($this->config['use_https']) {
@@ -29,20 +22,10 @@ class Server extends FastSwooleServer {
             $this->server = new HttpServer($this->config['monitor_ip'], $this->config['monitor_port'], SWOOLE_PROCESS);
         }
         $this->setCallback();
-        $this->server->on('Task', [$this, 'onTask']);
-        $this->server->on('Finish', [$this, 'onFinish']);
         $this->server->on('Request', [$this, 'onRequest']);
         $this->server->start();
     }
-    
-    public function onTask(SwooleServer $server, int $task_id, int $src_worker_id, $data) {
-        
-    }
-    
-    public function onFinish(SwooleServer $server, int $task_id, $data) {
-        
-    }
-    
+
     public function onRequest(HttpRequest $request, HttpResponse $response) {
         if($request->server['path_info'] == '/favicon.ico' || $request->server['request_uri'] == '/favicon.ico') {
             return $response->end();

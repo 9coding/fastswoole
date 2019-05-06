@@ -12,6 +12,12 @@ class Server {
     
     public $masterId = '';
     
+    public $server;
+
+    public function __construct() {
+        $this->config = Core::$app['config']->get('server.'.MODE);
+    }
+    
     public function execute($command = '') {
         if (file_exists($this->config['pid_file'])) {
             $this->masterId = file_get_contents($this->config['pid_file']);
@@ -104,6 +110,8 @@ class Server {
 	$this->server->on('ManagerStart', [$this, 'onManagerStart']);
         $this->server->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->server->on('WorkerError', [$this, 'onWorkerError']);
+        $this->server->on('Task', [$this, 'onTask']);
+        $this->server->on('Finish', [$this, 'onFinish']);
     }
     
     public function onMasterStart(SwooleServer $server) {
@@ -134,5 +142,13 @@ class Server {
     
     public function onWorkerError(SwooleServer $server, int $worker_id, int $worker_pid, int $exit_code, int $signal) {
         Core::$app['log']->addInfo('worker_id : ' . $worker_id . '; worker_pid : ' . $worker_pid . '; exit_code : ' . $exit_code . '; signal : ' . $signal);
+    }
+    
+    public function onTask(SwooleServer $server, int $task_id, int $src_worker_id, $data) {
+        
+    }
+    
+    public function onFinish(SwooleServer $server, int $task_id, $data) {
+        
     }
 }

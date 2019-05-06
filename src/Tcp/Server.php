@@ -2,7 +2,6 @@
 
 namespace FastSwoole\Tcp;
 
-use FastSwoole\Core;
 use FastSwoole\Server as FastSwooleServer;
 use Swoole\Server;
 use FastSwoole\Functions\ClassMethod;
@@ -10,12 +9,6 @@ use FastSwoole\Functions\ClassMethod;
 class Server extends FastSwooleServer {
     
     use ClassMethod;
-    
-    public $server;
-
-    public function __construct() {
-        $this->config = Core::$app['config']->get('server.tcp');
-    }
 
     public function run() {
         $this->server = new Server($this->config['monitor_ip'], $this->config['monitor_port'], SWOOLE_PROCESS);
